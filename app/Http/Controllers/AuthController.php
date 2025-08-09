@@ -15,7 +15,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:4|max:5|confirmed',
         ]);
 
         if ($validator->fails()) {
@@ -65,6 +65,15 @@ class AuthController extends Controller
             'status' => 'sucesso',
             'message' => 'Login bem-sucedido',
             'token' => $token,
+        ]);
+    }
+
+    public function logout()
+    {
+        JWTAuth::invalidate(JWTAuth::getToken());
+        return response()->json([
+            'status' => 'sucesso',
+            'message' => 'Logout bem-sucedido',
         ]);
     }
 }

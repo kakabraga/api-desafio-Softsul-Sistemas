@@ -6,4 +6,8 @@ use App\Http\Controllers\AuthController;
 Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('login', 'login');
+    Route::post('logout', 'logout')->middleware('auth:api');
+});
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
 });
