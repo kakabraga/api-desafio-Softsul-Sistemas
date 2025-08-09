@@ -1,0 +1,48 @@
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - .:/var/www/html
+        ports:
+            - "8000:80"
+        depends_on:
+            - db
+    
+    nginx:
+        image: nginx:stable-alpine
+        container_name: softsul-nginx
+        volumes:
+            - .:/var/www/html
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+        ports:
+            - "8001:80"
+        depends_on:
+            - app
+
+    db:
+        image: mysql:8.0
+        container_name: softsul-mysql
+        restart: always
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: sua_senha
+            MYSQL_DATABASE: softsul_db
+        volumes:
+            - dbdata:/var/lib/mysql
+    
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: softsul-phpmyadmin
+        restart: always
+        ports:
+            - "8080:80"
+        environment:
+            PMA_HOST: db
+            MYSQL_ROOT_PASSWORD: sua_senha
+
+volumes:
+    dbdata:
